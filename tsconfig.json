@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "CommonJS",
+        "lib": ["ESNext"],
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
+
+        "strictFunctionTypes": true,
+        "noImplicitAny": true,
+        "strictNullChecks": false
+    }
+}
