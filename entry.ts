@@ -1,3 +1,5 @@
 import Bot from "./library/bot";
+import dotenv from "dotenv";
 
-new Bot(process.env.TOKEN, process.env.APP_ID);
+const parsed = dotenv.config().parsed;
+new Bot(parsed.TOKEN, parsed.APP_ID);
