@@ -53,6 +53,7 @@ export default class AudioChannel {
     private static readonly TracksPerPage = 10;
     public static readonly MAX_VOLUME = 2;
     public static readonly MIN_VOLUME = 0.5;
+    private static readonly VOLUME_MULTIPLIER = .5;
 
     private _subscription: PlayerSubscription;
     private _voiceChannel: VoiceChannel;
@@ -92,7 +93,7 @@ export default class AudioChannel {
         });
 
         const resource = createAudioResource(data, {inlineVolume: true, inputType: StreamType.Opus});
-        if(resource.volume) resource.volume.setVolume(.75 * this._volume);
+        if(resource.volume) resource.volume.setVolume(AudioChannel.VOLUME_MULTIPLIER * this._volume);
         return resource;
     };
 
@@ -136,7 +137,7 @@ export default class AudioChannel {
         this._volume = newVolume;
 
         if(this._currentResource && this._currentResource.volume) {
-            this._currentResource.volume.setVolume(.75 * newVolume);
+            this._currentResource.volume.setVolume(AudioChannel.VOLUME_MULTIPLIER * newVolume);
         };
 
         return `Changed track volume to ${newVolume}!`;
@@ -173,6 +174,7 @@ export default class AudioChannel {
                 success: false,
                 result: "You already voted."
             };
+            
             this._voters.add(requester);
 
             let requiredPeople = this._userAmount - 1;
