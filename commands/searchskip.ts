@@ -7,23 +7,17 @@ import { TextChannel } from "discord.js";
 
 export default class extends Command {
     public constructor() {
-        super("search", "Search a video and add it to queue.");
+        super("searchskip", "Search a video and add it to queue. Immediate playback.");
         this.addStringOption(builder => 
             builder.setName("query")
             .setDescription("Search query.")
             .setMaxLength(100)
             .setRequired(true)
         )
-        this.addBooleanOption(builder => 
-            builder.setName("playskip")
-            .setDescription("Whether or not to play immediately.")
-            .setRequired(false)
-        )
     }
     
     public async execute(bot: Bot, interaction: GuildInteraction): Promise<any> {
         const searchQuery = interaction.options.getString("query", true);
-        const playskip = !!interaction.options.getBoolean("playskip", false);
         if(!searchQuery) return interaction.reply("Please put search query.");
 
         const member = interaction.member;
@@ -33,7 +27,7 @@ export default class extends Command {
         if(!audio) return interaction.reply("I am not in a Voice Channel.");
         if(!voiceState || !voiceState.channel || voiceState.channel !== audio.voiceChannel) return interaction.reply("Please join this Voice Channel.");
 
-        if(playskip && !audio.GetPrivileges(member).has("SKIPTRACK")) return interaction.reply("You do not have skip permissions.");
+        if(!audio.GetPrivileges(member).has("SKIPTRACK")) return interaction.reply("You do not have skip permissions.");
 
         await interaction.deferReply({ephemeral: false});
 
@@ -59,10 +53,10 @@ export default class extends Command {
 
         let chosen = normalVideos[number - 1].url;
 
-        const finalResult = await audio.AddTrackToQueue(member, chosen, playskip);
+        const finalResult = await audio.AddTrackToQueue(member, chosen, true);
         interaction.followUp(finalResult.result);
         
-        if(playskip && finalResult.success && audio.queue.length > 1) {
+        if(finalResult.success && audio.queue.length > 1) {
             const result2 = await audio.Skip(member);
             if(!result2.success) interaction.followUp(result2.result);
         };
