@@ -52,10 +52,10 @@ export default class extends Command {
 
         await interaction.editReply({embeds: [embed]});
         const response = await AwaitResponse(interaction.channel as TextChannel, interaction.user, 30_000);
-        if(!response.success) return interaction.editReply("You didn't reply in time.");
+        if(!response.success) return interaction.followUp("You didn't reply in time.");
 
         const number = parseInt(response.result, 10);
-        if(isNaN(number) || number < 1 || number > normalVideos.length) return interaction.editReply("Invalid input.");
+        if(isNaN(number) || number < 1 || number > normalVideos.length) return interaction.followUp("Invalid input.");
 
         let chosen = normalVideos[number - 1].url;
 
